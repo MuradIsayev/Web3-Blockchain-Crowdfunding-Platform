@@ -21,7 +21,9 @@ const CreateCampaign = () => {
         setForm({ ...form, [fieldName]: e.target.value })
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        console.log(form) 
     }
 
     return (
