@@ -16,14 +16,14 @@ export const StateContextProvider = ({ children }) => {
     // Order should be same as the order of the arguments in the smart contract function
     const publishCampaign = async (form) => {
         try {
-            const data = await createCampaign([
-                address, // owner (Who is creating this campaign)
-                form.title, // title
-                form.description, // description
-                form.target, // target
-                new Date(form.deadline).getTime(), // deadline
-                form.image // image
-            ])
+            const data = await createCampaign({args:[
+                address, //owner (Who is creating this campaign)
+                form.title, 
+                form.description,
+                form.target,
+                new Date(form.deadline).getTime(),
+                form.image
+                ]});
 
             console.log('Contract call success', data);
         }
