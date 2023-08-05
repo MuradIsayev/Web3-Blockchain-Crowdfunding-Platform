@@ -4,10 +4,12 @@ import { ethers } from 'ethers'
 import { money } from '../assets'
 import { CustomButton, FormField } from '../components'
 import { checkIfImage } from '../utils'
+import { useStateContext } from '../context'
 
 const CreateCampaign = () => {
-    const navigate = useNavigate()
-    const [isLoading, setIsLoading] = useState(false)
+    const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
+    const { createCampaign } = useStateContext();
     const [form, setForm] = useState({
         name: '',
         title: '',
@@ -22,8 +24,20 @@ const CreateCampaign = () => {
     }
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        console.log(form) 
+        e.preventDefault();
+
+        checkIfImage(form.image, async (exists) => {
+            if (exists) {
+                setIsLoading(true);
+                await createCampaign({...form, target: ethers.utils.parseUnits(form.target, 18)}); // 18 is the decimal of ETH
+                setIsLoading(false);
+                navigate('/');
+            } else {
+                alert('Provide valid image URL');
+                setForm({ ...form, image: ''});
+            }
+        })
+
     }
 
     return (
