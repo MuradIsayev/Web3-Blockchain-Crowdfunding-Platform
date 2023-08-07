@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { useStateContext } from '../context'
+import { DisplayCampaigns } from '../components'
 
 const Home = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const [campaigns, setCampaigns] = useState([]); 
+    const [campaigns, setCampaigns] = useState([]);
 
-    const {address, contract, getCampaigns} = useStateContext();
+    const { address, contract, getCampaigns } = useStateContext();
 
     const fetchCampaigns = async () => {
         setIsLoading(true);
@@ -15,14 +16,15 @@ const Home = () => {
     }
 
     useEffect(() => {
-        if(contract) fetchCampaigns();
+        if (contract) fetchCampaigns();
     }, [address, contract])
 
     return (
-        <div>
-            <h1>Home</h1>
-        </div>
-
+        <DisplayCampaigns 
+            title="All Campaigns"
+            campaigns={campaigns}
+            isLoading={isLoading}
+        />
     )
 }
 
