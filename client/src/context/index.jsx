@@ -16,14 +16,16 @@ export const StateContextProvider = ({ children }) => {
     // Order should be same as the order of the arguments in the smart contract function
     const publishCampaign = async (form) => {
         try {
-            const data = await createCampaign({args:[
-                address, //owner (Who is creating this campaign)
-                form.title, 
-                form.description,
-                form.target,
-                new Date(form.deadline).getTime(),
-                form.image
-                ]});
+            const data = await createCampaign({
+                args: [
+                    address, //owner (Who is creating this campaign)
+                    form.title,
+                    form.description,
+                    form.target,
+                    new Date(form.deadline).getTime(),
+                    form.image
+                ]
+            });
 
             console.log('Contract call success', data);
         }
@@ -36,27 +38,36 @@ export const StateContextProvider = ({ children }) => {
         const campaigns = await contract.call('getCampaigns');
 
         const parsedCampaigns = campaigns.map((campaign, i) => ({
-                owner: campaign.owner,
-                title: campaign.title,
-                description: campaign.description,
-                target: ethers.utils.formatEther(campaign.target.toString()),
-                deadline: campaign.deadline.toNumber(),
-                amountCollected: ethers.utils.formatEther(campaign.amountCollected.toString()),
-                image: campaign.image,
-                pId: i,
+            owner: campaign.owner,
+            title: campaign.title,
+            description: campaign.description,
+            target: ethers.utils.formatEther(campaign.target.toString()),
+            deadline: campaign.deadline.toNumber(),
+            amountCollected: ethers.utils.formatEther(campaign.amountCollected.toString()),
+            image: campaign.image,
+            pId: i,
         }));
 
         return parsedCampaigns;
     }
 
+    const getUserCampaigns = async () => {
+        const allCampaigns = await getCampaigns();
+
+        const filteredCampaigns = allCampaigns.filter((campaign) => campaign.owner === address);
+
+        return filteredCampaigns;
+    }
+
     return (
-        <StateContext.Provider 
-            value={{ 
-                address, 
-                contract, 
-                createCampaign: publishCampaign, 
+        <StateContext.Provider
+            value={{
+                address,
+                contract,
+                createCampaign: publishCampaign,
                 connect,
-                getCampaigns
+                getCampaigns,
+                getUserCampaigns
             }}>
             {children}
         </StateContext.Provider>
