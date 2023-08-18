@@ -65,6 +65,25 @@ export const StateContextProvider = ({ children }) => {
         return data;
     }
 
+    // Get all the donations for a particular campaign 
+    const getDonations = async (pId) => {
+        const donations = await contract.call('getDonators', pId);
+        console.log(donations);
+        const numberOfDonations = donations[0].length;
+
+        const parsedDonations = [];
+
+        for (let i = 0; i < numberOfDonations; i++) {
+            parsedDonations.push({
+                donator: donations[0][i], // Address of the donator 
+                donation: ethers.utils.formatEther(donations[1][i].toString()), // Amount donated
+            });
+        }
+
+        return parsedDonations;
+    }
+
+
     return (
         <StateContext.Provider
             value={{
@@ -75,6 +94,7 @@ export const StateContextProvider = ({ children }) => {
                 getCampaigns,
                 getUserCampaigns,
                 donate,
+                getDonations,
             }}>
             {children}
         </StateContext.Provider>
